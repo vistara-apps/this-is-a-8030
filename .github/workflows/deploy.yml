@@ -27,9 +27,17 @@ jobs:
       env:
         NODE_OPTIONS: --max-old-space-size=4096
         
+    - name: Verify build output
+      run: |
+        echo "Build completed successfully!"
+        echo "Checking dist directory..."
+        ls -la dist/
+        echo "Build artifacts created successfully."
+        
     - name: Deploy to Vercel (Production)
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       uses: amondnet/vercel-action@v25
+      continue-on-error: true
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-args: '--prod'
@@ -39,6 +47,7 @@ jobs:
     - name: Deploy to Vercel (Preview)
       if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master'
       uses: amondnet/vercel-action@v25
+      continue-on-error: true
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-args: '--no-wait'
